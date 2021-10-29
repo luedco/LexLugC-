@@ -1,9 +1,5 @@
-using System;
-
-namespace txtToJson
+class Program
 {
-    class Program
-    {
         /*comentario de bloque
          linea 2 comentario*/
         static void Main()
@@ -14,5 +10,4 @@ namespace txtToJson
             Console.WriteLine(a);
         }
 
-    }
 }

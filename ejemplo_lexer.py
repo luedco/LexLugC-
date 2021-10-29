@@ -1,95 +1,112 @@
 # ------------------------------------------------------------
-# Lexer para C
+# Lexer para C#
 # ------------------------------------------------------------
 import ply.lex as lex
+from tabulate import tabulate
 
-# List of token names.   This is always required
-tokens = (
-   'NUMBER',
-   'PLUS',
-   'MINUS',
-   'TIMES',
-   'DIVIDE',
-   'LPAREN',
-   'RPAREN',
-   'keyword',
-   'identificador',
-   'inicioBloque',
-   'finBloque',
-   'finInstruccion',
-   'asignacion',
-   'comentario',
-   'comentario_bloque',
-   'cadena',
-   'coma'
-)
+def main():
+    # List of token names.   This is always required
+    tokens = [
+    'NUMBER',
+    'PLUS',
+    'MINUS',
+    'TIMES',
+    'DIVIDE',
+    'LPAREN',
+    'RPAREN',
+    'START_BLOCK',
+    'END_BLOCK',
+    'END_INSTRUCTION',
+    'ASSIGN',
+    'COMMENT',
+    'COMMENT_BLOCK',
+    'STRING',
+    'ID'
+    ]
 
-# Regular expression rules for simple tokens
-t_PLUS    = r'\+'
-t_MINUS   = r'-'
-t_TIMES   = r'\*'
-t_DIVIDE  = r'/'
-t_LPAREN  = r'\('
-t_RPAREN  = r'\)'
-t_inicioBloque = r'\{'
-t_finBloque = r'\}'
-t_finInstruccion = r'\;'
-t_asignacion = r'\='
-t_coma= r'\,'
+    reserved = {
+        'if' : 'IF',
+        'else' : 'ELSE',
+        'while' : 'WHILE',
+        'int'   : 'INT',
+        'float' : 'FLOAT',
+        'char'  : 'CHAR',
+        'string': 'STRING_ID',
+        'void' : 'VOID',
+        'class' : 'CLASS'
+    }
 
-# A regular expression rule with some action code
-def t_NUMBER(t):
-    r'\d+'
-    t.value = int(t.value)    
-    return t
+    tokens = tokens + list(reserved.values())
 
-# Define a rule so we can track line numbers
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
+    # Regular expression rules for simple tokens
+    t_PLUS    = r'\+'
+    t_MINUS   = r'-'
+    t_TIMES   = r'\*'
+    t_DIVIDE  = r'/'
+    t_LPAREN  = r'\('
+    t_RPAREN  = r'\)'
+    t_START_BLOCK = r'\{'
+    t_END_BLOCK = r'\}'
+    t_END_INSTRUCTION = r'\;'
+    t_ASSIGN = r'\='
 
-# A string containing ignored characters (spaces and tabs)
-t_ignore  = ' \t'
+    # A regular expression rule with some action code
+    def t_NUMBER(t):
+        r'\d+'
+        t.value = int(t.value)    
+        return t
 
-def t_keyword(t):
-    r'(int)|(float)|(char)|(return)|(if)|(else)|(void)|(class)'
-    return t
+    # Define a rule so we can track line numbers
+    def t_newline(t):
+        r'\n+'
+        t.lexer.lineno += len(t.value)
 
-def t_identificador(t):
-    r'([a-z]|[A-Z]|_|\.)([a-z]|[A-Z]|\d|_|\.)*'
-    return t
+    # A string containing ignored characters (spaces and tabs)
+    t_ignore  = ' \t'
+    '''
+    def t_identificador(t):
+        r'([a-z]|[A-Z]|_|\.)([a-z]|[A-Z]|\d|_|\.)*'
+        return t
+    '''
+    def t_STRING(t):
+        r'\".*\"'
+        return t
 
-def t_cadena(t):
-    r'\".*\"'
-    return t
+    def t_COMMENT(t):
+        r'\/\/.*'
+        return t
 
-def t_comentario(t):
-    r'\/\/.*'
-    return t
+    def t_COMMENT_BLOCK(t):
+        r'\/\*(.|\n)*\*\/'
+        return t
 
-def t_comentario_bloque(t):
-    r'\/\*(.|\n)*\*\/'
-    #return t
+    def t_ID(t):
+        r'([a-z]|[A-Z]|_|\.)([a-z]|[A-Z]|\d|_|\.)*'
+        t.type = reserved.get(t.value,'ID')    # Check for reserved words
+        return t
 
-# Error handling rule
-def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
-    t.lexer.skip(1)    
-    return t
+    # Error handling rule
+    def t_error(t):
+        print("Illegal character '%s'" % t.value[0])
+        t.lexer.skip(1)    
+        return t
 
-# Build the lexer
-lexer = lex.lex()
-
-def miLexer():
+    # Build the lexer
+    lexer = lex.lex()
+    
     f = open('fsharp.cs','r')
-    #lexer.input('3+4*_a23+-20*2')
     lexer.input(f.read())
+
+    data=[]
+ 
     while True:
         tok=lexer.token()
         if not tok:
             break
-        #print(tok)
-        print(tok.type, tok.value, tok.lineno, tok.lexpos)
-        
-        
-        
+        data.append([tok.type, tok.value, tok.lineno])
+    print(tabulate(data, headers = ["Type","Value","#Line"]))
+   
+    
+
+if __name__ == '__main__':
+    main()  
