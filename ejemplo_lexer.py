@@ -33,7 +33,8 @@ def main():
         'char'  : 'CHAR',
         'string': 'STRING_ID',
         'void' : 'VOID',
-        'class' : 'CLASS'
+        'class' : 'CLASS',
+        'static' : 'STATIC'
     }
 
     tokens = tokens + list(reserved.values())
