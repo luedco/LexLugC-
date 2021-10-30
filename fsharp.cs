@@ -1,7 +1,8 @@
 class Program
 {
-        /*comentario de bloque
-         linea 2 comentario*/
+        /*comentario 
+	de bloque*/
+	//Comentario de linea
         static void Main()
         {
             int a;

@@ -18,6 +18,11 @@ def main():
     'END_BLOCK',
     'END_INSTRUCTION',
     'ASSIGN',
+    'EQUAL',
+    'GREATER_THAN',
+    'GREATER_OR_EQUAL',
+    'LESS_THAN',
+    'LESS_OR_EQUAL',
     'COMMENT',
     'COMMENT_BLOCK',
     'STRING',
@@ -29,12 +34,13 @@ def main():
         'else' : 'ELSE',
         'while' : 'WHILE',
         'int'   : 'INT',
-        'float' : 'FLOAT',
+        'double' : 'DOUBLE',
         'char'  : 'CHAR',
         'string': 'STRING_ID',
         'void' : 'VOID',
         'class' : 'CLASS',
-        'static' : 'STATIC'
+        'static' : 'STATIC',
+        'public' : 'PUBLIC'
     }
 
     tokens = tokens + list(reserved.values())
@@ -50,11 +56,20 @@ def main():
     t_END_BLOCK = r'\}'
     t_END_INSTRUCTION = r'\;'
     t_ASSIGN = r'\='
+    t_EQUAL = r'\=\='
+    t_GREATER_THAN = r'\>'
+    t_GREATER_OR_EQUAL = r'\>\='
+    t_LESS_THAN = r'\<'
+    t_LESS_OR_EQUAL = r'\<\='
 
     # A regular expression rule with some action code
     def t_NUMBER(t):
-        r'\d+'
-        t.value = int(t.value)    
+        r'[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)'
+        try:
+            t.value = int(t.value)
+        except:
+            t.value = float(t.value)
+           
         return t
 
     # Define a rule so we can track line numbers
@@ -64,11 +79,7 @@ def main():
 
     # A string containing ignored characters (spaces and tabs)
     t_ignore  = ' \t'
-    '''
-    def t_identificador(t):
-        r'([a-z]|[A-Z]|_|\.)([a-z]|[A-Z]|\d|_|\.)*'
-        return t
-    '''
+
     def t_STRING(t):
         r'\".*\"'
         return t
@@ -83,7 +94,7 @@ def main():
 
     def t_ID(t):
         r'([a-z]|[A-Z]|_|\.)([a-z]|[A-Z]|\d|_|\.)*'
-        t.type = reserved.get(t.value,'ID')    # Check for reserved words
+        t.type = reserved.get(t.value,'ID') 
         return t
 
     # Error handling rule
@@ -95,7 +106,7 @@ def main():
     # Build the lexer
     lexer = lex.lex()
     
-    f = open('fsharp.cs','r')
+    f = open('fsharp02.cs','r')
     lexer.input(f.read())
 
     data=[]
