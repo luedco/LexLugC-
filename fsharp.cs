@@ -8,7 +8,7 @@ class Program
             int a;
             a = 15;
             Console.WriteLine("Hola Mundo\n");
-            Console.WriteLine(a);
+            a = 0 + 3;
         }
 
 }

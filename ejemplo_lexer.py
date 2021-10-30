@@ -106,7 +106,7 @@ def main():
     # Build the lexer
     lexer = lex.lex()
     
-    f = open('fsharp02.cs','r')
+    f = open('fsharp.cs','r')
     lexer.input(f.read())
 
     data=[]
@@ -118,7 +118,5 @@ def main():
         data.append([tok.type, tok.value, tok.lineno])
     print(tabulate(data, headers = ["Type","Value","#Line"]))
    
-    
-
 if __name__ == '__main__':
     main()  
