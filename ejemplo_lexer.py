@@ -26,7 +26,7 @@ def main():
     'COMMENT',
     'COMMENT_BLOCK',
     'STRING',
-    'ID'
+    'IDENTIFIER'
     ]
 
     reserved = {
@@ -92,9 +92,9 @@ def main():
         r'\/\*(.|\n)*\*\/'
         return t
 
-    def t_ID(t):
+    def t_IDENTIFIER(t):
         r'([a-z]|[A-Z]|_|\.)([a-z]|[A-Z]|\d|_|\.)*'
-        t.type = reserved.get(t.value,'ID') 
+        t.type = reserved.get(t.value,'IDENTIFIER') 
         return t
 
     # Error handling rule
