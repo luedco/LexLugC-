@@ -107,6 +107,7 @@ def main():
     lexer = lex.lex()
     
     f = open('fsharp.cs','r')
+    #f = open('fsharp02.cs','r') //Ejemplo 2
     lexer.input(f.read())
 
     data=[]
